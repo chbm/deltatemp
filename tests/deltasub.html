@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Delta Test Cases SubTemplate</title>
+		<style type="text/css">
+			td {
+				border: thin solid;
+			}
+			/* Firefox: goes up, Safari: isn't parsed */
+			li {
+				border: thin solid;
+			}
+		</style>
+		<script src='../lib/jquery/jquery.js'></script>
+        <script src='../delta.js' ></script>
+        
+        <script>
+          stuff = {
+            'aaa': 'din text',
+			'vec': ['ele1', 'ele 2', 3],
+			'func': function(elem) {
+				return $(elem).attr('id');
+			}
+          };
+          
+          $(document).ready(function(){
+		  	/* this doesn't happen cause document is top level, not this context */
+		  	alert('reprocess document!!')
+			var dt = new DeltaTemp(stuff);
+            dt.processDocument();          
+			});
+        </script>
+    </head>
+    
+    <body>
+      <div id='test' deltemp='$aaa'>static text</div>
+	  <ul>
+	  	<li id='replacedlistelement' deltemp='$vec'>replace this</li>
+	  </ul>
+	  <div id='divmap' deltemp='$vec'>this div will become a list</div>
+	  <div id='functest' deltemp='$func'>greek text</div>
+    </body>

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Delta Test Cases</title>
+		<style type="text/css">
+			td {
+				border: thin solid;
+			}
+		</style>
+		<script src='../lib/jquery/jquery.js'></script>
+        <script src='../delta.js' ></script>
+        
+        <script>
+          stuff = {
+            'aaa': 'din text',
+			'vec': ['ele1', 'ele 2', 3],
+			'func': function(elem) {
+				return $(elem).attr('id');
+			},
+			'bad': false,
+			'good': 1,
+			'badfunc': function(elem) {
+				return 0;
+			}
+          };
+          
+          $(document).ready(function(){
+		  	var dt = new DeltaTemp(stuff);
+            dt.processDocument();
+			//alert('foo');
+          });
+        </script>
+    </head>
+    
+    <body>
+      <div id='test' deltemp='$aaa'>static text</div>
+	  <div id='replacefail' deltemp='$notexist'>this text will not be replaced</div>
+	  <ul>
+	  	<li id='replacedlistelement' deltemp='$vec'>replace this</li>
+	  </ul>
+	  <div id='divmap' deltemp='$vec'>this div will become a list</div>
+	  <div id='functest' deltemp='$func'>greek text</div>
+	  <div id='goawaytest' deltemp='test foo'>
+	  	this text should go away
+		<span id='goawaytestchild'>this text too</span>
+		<span id='goawaytestchild2 deltemp='$good'>this should go away and not be replaced</span>
+	  </div>
+	  <div id='goawaytest2' deltemp='test bad'> more text to go away</div>
+	  <div id='goawaytest3' deltemp='test badfunc'> more text to go away</div>
+	  <div id='goawaytest4' deltemp='test good'> this text shouldn't go away</div>
+	  <div id='includetest' style='border: solid black' deltemp='include deltasub.html'>include div</div>
+    </body>
