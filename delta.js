@@ -13,6 +13,7 @@
  Template Language
  <span deltemp="$foo">
  <div deltemp="include subtemplate.html">
+ <div deltemp="test var">
  
 */
 
