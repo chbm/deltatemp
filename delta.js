@@ -11,10 +11,14 @@
   INCLUDE jQuery
 
  Template Language
- <span deltemp="$foo">
- <div deltemp="include subtemplate.html">
- <div deltemp="test var">
+ map: <span deltemp="$foo">
+ include html: <div deltemp="include subtemplate.html">
+ conditional removal: <div deltemp="test var">
  
+ $foo can be:
+ 	* a string/number, 
+ 	* Array of string/numbers in which case the Arrays elems get maped onto clones of the html element
+ 	* Array of dictionaries in which case each dictinary is maped onto a clone of the html block
 */
 
 
@@ -47,15 +51,16 @@ function $type(obj){
 };
 /* end of lifted code */
 
-DeltaTemp = function(ns) {
+DeltaTemp = function(ns, curtains) {
 	this._ns = ns;
+	this._curtains = curtains;
 	this._procs = {};
 	this.init();
 };
 
 DeltaTemp.prototype = DeltaTemp.fn = {
     init: function(){
-        var cssObj = {
+/*        var cssObj = {
             position: "absolute",
             top: 0,
             left: 0,
@@ -65,10 +70,10 @@ DeltaTemp.prototype = DeltaTemp.fn = {
             'z-index': 99,
             'text-align': "center"
         }
-/*        $('body').append('<div id="deltatempcurtain">loading ...</div>');
+        $('body').append('<div id="deltatempcurtain">loading ...</div>');
         $('#deltatempcurtain').css(cssObj).show();
         */
-		$('body').hide();
+		this._dropCurtain();
     },
     
     processDocument: function(){
@@ -80,16 +85,26 @@ DeltaTemp.prototype = DeltaTemp.fn = {
             id = 0;
         };
         this._procs[id] = 1;
-        nextid = id + 1;
+        var nextid = id + 1;
         
-        that = this;
+        var that = this;
         node.find('[deltemp]').each(function(i){
             if ($(this).attr('deltemp').substr(0, 1) == '$') {
-                v = $(this).attr('deltemp').substr(1);
+                var v = $(this).attr('deltemp').substr(1);
                 switch ($type(that._ns[v])) {
                     case 'array':
                         for (n = that._ns[v].length - 1; n > -1; n--) {
-                            $(this).clone().attr('id', $(this).attr('id') + 'd' + n).text(that._ns[v][n]).insertAfter($(this));
+						    var e = $(this).clone().attr('id', $(this).attr('id') + 'd' + n);
+							switch($type(that._ns[v][n])) {
+								case 'object':
+									e.attr('deltemp', '+' + e.attr('deltemp'));
+									var dt = new DeltaTemp(that._ns[v][n], true);
+									dt.processNode($(e));
+								break;								
+								default:
+								e.text(that._ns[v][n]);
+							}
+							e.insertAfter($(this));
                         }
                         $(this).remove(); /* should I really remove the node ? */
                         break;
@@ -139,7 +154,13 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         this._raiseCurtain();
     },
     
+	_dropCurtain: function() {
+		if(!this._curtains) {return};
+		$('body').hide();
+	},
+	
     _raiseCurtain: function(){
+		if(!this._curtains) {return};
 		var np=0;
 		for(var i in this._procs) {np++};
         if (np == 0) {
