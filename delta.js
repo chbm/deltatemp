@@ -11,9 +11,9 @@
   INCLUDE jQuery
 
  Template Language
- map: <span deltemp="$foo">
- include html: <div deltemp="include subtemplate.html">
- conditional removal: <div deltemp="test var">
+ map: <span class='deltemp_$foo'>
+ include html: <div class='deltemp_include_subtemplate.html'>
+ conditional removal: <div class='deltemp_test_var'>
  
  $foo can be:
  	* a string/number, 
@@ -59,7 +59,10 @@ DeltaTemp = function(ns, curtains) {
 };
 
 DeltaTemp.prototype = DeltaTemp.fn = {
-    init: function(){
+    dprefix: 'deltatemp',
+	_dpregex:	'*[className^="deltatemp"]',
+	
+	init: function(){
 /*        var cssObj = {
             position: "absolute",
             top: 0,
@@ -87,17 +90,20 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         this._procs[id] = 1;
         var nextid = id + 1;
         
-        var that = this;
-        node.find('[deltemp]').each(function(i){
-            if ($(this).attr('deltemp').substr(0, 1) == '$') {
-                var v = $(this).attr('deltemp').substr(1);
+        var that = this;				
+		
+        node.find(this._dpregex).each(function(i){
+
+			var code = that._getCode(this);			
+            if (code.substr(0, 1) == '$') {
+                var v = code.substr(1);
                 switch ($type(that._ns[v])) {
                     case 'array':
                         for (n = that._ns[v].length - 1; n > -1; n--) {
 						    var e = $(this).clone().attr('id', $(this).attr('id') + 'd' + n);
 							switch($type(that._ns[v][n])) {
 								case 'object':
-									e.attr('deltemp', '+' + e.attr('deltemp'));
+									e.addClass('delta_+' + that._getCode(e));
 									var dt = new DeltaTemp(that._ns[v][n], true);
 									dt.processNode($(e));
 								break;								
@@ -118,18 +124,18 @@ DeltaTemp.prototype = DeltaTemp.fn = {
                         $(this).text(that._ns[v]);
                 }
             }
-            else if ($(this).attr('deltemp').substr(0, 7) == 'include') {
+            else if (code.substr(0, 7) == 'include') {
                     /* include html */
-                    var p = $(this).attr('deltemp').substr(8);
+                    var p = code.substr(8);
                     that._procs[nextid] = 1;
                     $(this).load(p, function(){
-                        $(this).attr('deltemp', '+' + p);
+                        $(this).addClass(this.dprefix + '+' + p);
                         that.processNode($(this), nextid);
                     });
             } 
-			else if ($(this).attr('deltemp').substr(0, 4) == 'test') {
+			else if (code.substr(0, 4) == 'test') {
 				/* conditional */
-					var v = $(this).attr('deltemp').substr(5);
+					var v = code.substr(5);
 					var r = false;
 					switch ($type(that._ns[v])) {
                     case 'array':
@@ -153,6 +159,15 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         delete (this._procs[id]);
         this._raiseCurtain();
     },
+
+	_getCode: function(e) {
+		var that = this;
+		return $(e).attr('className').split(' ').
+			filter( function(el) { 
+				return el.substr(0, that.dprefix.length) == that.dprefix; 
+			} )[0].substr(that.dprefix.length+1);
+	},
+
     
 	_dropCurtain: function() {
 		if(!this._curtains) {return};

@@ -7,6 +7,10 @@
             td {
                 border: thin solid;
             }
+            
+            .red {
+                color: red;
+            }
         </style>
         <script src='../lib/jquery/jquery.js'>
         </script>
@@ -34,9 +38,9 @@
                     'title': 'Second',
                     'body': '2222222blah blah blah'
                 }, {
-					'title': 'Third',
-					'body': '3333333blah blah aasdasdfadsf'
-				}]
+                    'title': 'Third',
+                    'body': '3333333blah blah aasdasdfadsf'
+                }]
             };
             
             $(document).ready(function(){
@@ -48,49 +52,50 @@
     </head>
     <body>
         <div id='clock'>
-            Page rendered at: <span id='nowtime' deltemp='$now'></span>
+            Page rendered at: <span id='nowtime' class="deltatemp_$now red"></span>
         </div>
-        <div id='test' deltemp='$aaa'>
+        <div id='test' class="deltatemp_$aaa">
             static text
         </div>
-        <div id='replacefail' deltemp='$notexist'>
+        <div id='replacefail' class="deltatemp_$notexist">
             this text will not be replaced
         </div>
+        <div id='notreplaced' class='pretty class'>
+            this is not be touched either
+        </div>
         <ul>
-            <li id='replacedlistelement' deltemp='$vec'>
+            <li id='replacedlistelement' class='deltatemp_$vec'>
                 replace this
             </li>
         </ul>
         <div id='articles'>
-        	ARTICLES:::
-            <div id='article' deltemp='$aopl'>
-                Title: <span id='articletitle' deltemp='$title'>
-                </span>
-                Body: <span id='articlebody' deltemp='$body'>
-                </span>
+            ARTICLES:::
+            <div id='article' class='deltatemp_$aopl'>
+                Title: <span id='articletitle' class='deltatemp_$title'></span>
+                Body: <span id='articlebody' class='deltatemp_$body'></span>
             </div>
-			:::: END OF ARTICLES
+            :::: END OF ARTICLES
         </div>
-        <div id='divmap' deltemp='$vec'>
+        <div id='divmap' class='deltatemp_$vec'>
             this div will become a list
         </div>
-        <div id='functest' deltemp='$func'>
+        <div id='functest' class='deltatemp_$func'>
             greek text
         </div>
-        <div id='goawaytest' deltemp='test foo'>
+        <div id='goawaytest' class='deltatemp_test foo'>
             this text should go away<span id='goawaytestchild'>this text too</span>
-            <span id='goawaytestchild2 deltemp='$good'>this should go away and not be replaced</span>
+            <span id='goawaytestchild2 class='deltatemp_$good'>this should go away and not be replaced</span>
         </div>
-        <div id='goawaytest2' deltemp='test bad'>
+        <div id='goawaytest2' class='deltatemp_test_bad'>
             more text to go away
         </div>
-        <div id='goawaytest3' deltemp='test badfunc'>
+        <div id='goawaytest3' class='deltatemp_test_badfunc'>
             more text to go away
         </div>
-        <div id='goawaytest4' deltemp='test good'>
+        <div id='goawaytest4' class='deltatemp_test_good'>
             this text shouldn't go away
         </div>
-        <div id='includetest' style='border: solid black' deltemp='include deltasub.html'>
+        <div id='includetest' style='border: solid black' class='deltatemp_include_deltasub.html'>
             include div
         </div>
     </body>
