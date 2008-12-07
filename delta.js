@@ -55,6 +55,7 @@ DeltaTemp = function(ns, curtains) {
 	this._ns = ns;
 	this._curtains = curtains;
 	this._procs = {};
+	this.nextid = 0;
 	this.init();
 };
 
@@ -88,7 +89,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
             id = 0;
         };
         this._procs[id] = 1;
-        var nextid = id + 1;
+        this.nextid = id + 1;
         
         var that = this;				
 		
@@ -96,70 +97,83 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 
 			var code = that._getCode(this);			
             if (code.substr(0, 1) == '$') {
-                var v = code.substr(1);
-                switch ($type(that._ns[v])) {
-                    case 'array':
-                        for (n = that._ns[v].length - 1; n > -1; n--) {
-						    var e = $(this).clone().attr('id', $(this).attr('id') + 'd' + n);
-							switch($type(that._ns[v][n])) {
-								case 'object':
-									e.addClass('delta_+' + that._getCode(e));
-									var dt = new DeltaTemp(that._ns[v][n], true);
-									dt.processNode($(e));
-								break;								
-								default:
-								e.text(that._ns[v][n]);
-							}
-							e.insertAfter($(this));
-                        }
-                        $(this).remove(); /* should I really remove the node ? */
-                        break;
-                    case 'function':
-                        $(this).text(that._ns[v](this));
-                        break;
-                    case false:
-                        /* doesn't exist */
-                        break;
-                    default:
-                        $(this).text(that._ns[v]);
-                }
+                that._processNodeMapVar(this, code.substr(1));
             }
             else if (code.substr(0, 7) == 'include') {
-                    /* include html */
-                    var p = code.substr(8);
-                    that._procs[nextid] = 1;
-                    $(this).load(p, function(){
-                        $(this).addClass(this.dprefix + '+' + p);
-                        that.processNode($(this), nextid);
-                    });
+				that._processNodeIncludeHtml(this, code.substr(8));                    
             } 
 			else if (code.substr(0, 4) == 'test') {
-				/* conditional */
-					var v = code.substr(5);
-					var r = false;
-					switch ($type(that._ns[v])) {
-                    case 'array':
-						/* grab the first value, whatever */
-						r = that._ns[v][0];
-                        break;
-                    case 'function':
-                        r = that._ns[v](this);
-                        break;
-                    case false:
-                        /* doesn't exist */
-                        break;
-                    default:
-                        r = that._ns[v];
-                }
-					if(! r) {
-						$(this).remove();
-					}
+				that._processNodeTestVar(this, code.substr(5));					
 			}
-        });
+        } );
         delete (this._procs[id]);
         this._raiseCurtain();
     },
 
+	_processNodeMapVar: function (elem, v) {
+		var worker = function(that, r) {
+                switch ($type(r)) {
+                    case 'array':
+                        for (n = r.length - 1; n > -1; n--) {
+						    var e = $(elem).clone().attr('id', $(elem).attr('id') + 'd' + n);
+							switch($type(r[n])) {
+								case 'object':
+									e.addClass('delta_+' + that._getCode(e));
+									var dt = new DeltaTemp(r[n], true);
+									dt.processNode($(e));
+								break;								
+								default:
+								e.text(r[n]);
+							}
+							e.insertAfter($(elem));
+                        }
+                        $(elem).remove(); /* should I really remove the node ? */
+                        break;
+                    case 'function':
+						worker(that, r(elem)); 
+//                        $(elem).text(r);
+                        break;
+                    case false:
+                        /* doesn't exist */
+                        break;
+                    default:
+                        $(elem).text(r);
+                }
+			}; 
+		worker(this, this._ns[v]);
+	},
+
+	_processNodeIncludeHtml: function (elem, p) {
+			var that = this;
+                    this._procs[this.nextid] = 1;
+                    $(elem).load(p, function(){
+                        $(elem).addClass(this.dprefix + '+' + p);
+                        that.processNode($(elem), this.nextid);
+                   });
+	},
+	
+	_processNodeTestVar: function (elem, v) {
+					var r = false;
+					switch ($type(this._ns[v])) {
+                    case 'array':
+						/* grab the first value, whatever */
+						r = this._ns[v][0];
+                        break;
+                    case 'function':
+                        r = this._ns[v](elem);
+                        break;
+                    case false:
+                        /* doesn't exist */
+                        break;
+                    default:
+                        r = this._ns[v];
+						                }
+					if(! r) {
+						$(elem).remove();
+					}
+
+	},
+	
 	_getCode: function(e) {
 		var that = this;
 		return $(e).attr('className').split(' ').
