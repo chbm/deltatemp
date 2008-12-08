@@ -59,11 +59,19 @@ function $type(obj){
 };
 /* end of lifted code */
 
+function $updateID(e, n){
+	$(e).attr('id', $(e).attr('id') + 'd' + n);
+}
+
 DeltaTemp = function(ns, curtains){
     this._ns = ns;
     this._curtains = curtains;
+ 
+ 	this.treeroot = $('body');
+ 
     this._procs = {};
     this.nextid = 0;
+	
     this.init();
 };
 
@@ -99,6 +107,8 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         this._procs[id] = 1;
         this.nextid = id + 1;
         
+//		this.treeroot = node;
+		
         var that = this;
         
         node.find(this._dpregex).each(function(i){
@@ -129,12 +139,18 @@ DeltaTemp.prototype = DeltaTemp.fn = {
             switch ($type(r)) {
                 case 'array':
                     for (n = r.length - 1; n > -1; n--) {
-                        var e = $(elem).clone().attr('id', $(elem).attr('id') + 'd' + n);
+                        var e = $(elem).clone();
+						$updateID(e,n);
                         switch ($type(r[n])) {
                             case 'object':
                                 e.addClass(that.dprefix + '_+' + that._getCode(e));
-                                var dt = new DeltaTemp(r[n], true);
-                                dt.processTree($(e));
+								that._fullns = that._ns;
+								that._ns = r[n];
+								that.processTree(e);
+								that._ns = that._fullns;
+								e.find(that._dpregex).each(function () {
+									$updateID(this,n)
+								});
                                 break;
                             default:
                                 e.text(r[n]);
@@ -194,12 +210,11 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         })[0].substr(that.dprefix.length + 1);
     },
     
-    
     _dropCurtain: function(){
         if (!this._curtains) {
             return
         };
-        $('body').hide();
+        $(this.treeroot).hide();
     },
     
     _raiseCurtain: function(){
@@ -212,7 +227,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         };
         if (np == 0) {
             /*            $('#deltatempcurtain').slideUp();*/
-            $('body').fadeIn("slow");
+            $(this.treeroot).fadeIn("slow");
         }
     }
 }
