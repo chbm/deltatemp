@@ -89,10 +89,10 @@ DeltaTemp.prototype = DeltaTemp.fn = {
     },
     
     processDocument: function(){
-        this.processNode($('body'));
+        this.processTree($('body'));
     },
     
-    processNode: function(node, id){
+	processTree: function(node, id) {
         if (!id) {
             id = 0;
         };
@@ -102,22 +102,26 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         var that = this;
         
         node.find(this._dpregex).each(function(i){
-        
-            var code = that._getCode(this);
-            if (code.substr(0, 1) == '$') {
-                that._processNodeMapVar(this, code.substr(1));
-            }
-            else 
-                if (code.substr(0, 7) == 'include') {
-                    that._processNodeIncludeHtml(this, code.substr(8));
-                }
-                else 
-                    if (code.substr(0, 4) == 'test') {
-                        that._processNodeTestVar(this, code.substr(5));
-                    }
+			that.processNode(this, i);
         });
         delete (this._procs[id]);
         this._raiseCurtain();
+		
+	},
+	
+    processNode: function(node, id){        
+        var code = this._getCode(node);
+            if (code.substr(0, 1) == '$') {
+                this._processNodeMapVar(node, code.substr(1));
+            }
+            else 
+                if (code.substr(0, 7) == 'include') {
+                    this._processNodeIncludeHtml(node, code.substr(8));
+                }
+                else 
+                    if (code.substr(0, 4) == 'test') {
+                        this._processNodeTestVar(node, code.substr(5));
+                    }
     },
     
     _processNodeMapVar: function(elem, v){
@@ -130,7 +134,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
                             case 'object':
                                 e.addClass(that.dprefix + '_+' + that._getCode(e));
                                 var dt = new DeltaTemp(r[n], true);
-                                dt.processNode($(e));
+                                dt.processTree($(e));
                                 break;
                             default:
                                 e.text(r[n]);
@@ -157,7 +161,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         this._procs[this.nextid] = 1;
         $(elem).load(p, function(){
             $(elem).addClass(this.dprefix + '+' + p);
-            that.processNode($(elem), this.nextid);
+            that.processTree($(elem), this.nextid);
         });
     },
     

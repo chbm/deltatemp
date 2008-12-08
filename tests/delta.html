@@ -21,7 +21,9 @@
                 'aaa': 'din text',
                 'vec': ['ele1', 'ele 2', 3],
                 'func': function(elem){
-                    return $(elem).attr('id');
+                    return function(elem){
+						return $(elem).attr('id')
+					};
                 },
                 'bad': false,
                 'good': 1,
