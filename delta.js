@@ -149,15 +149,18 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 								that.processTree(e);
 								that._ns = that._fullns;
 								e.find(that._dpregex).each(function () {
-									$updateID(this,n)
+									$updateID(this,n);
 								});
                                 break;
                             default:
                                 e.text(r[n]);
                         }
+						if (n > 0) {
+							e.addClass('deltatempgenerted');
+						}
                         e.insertAfter($(elem));
                     }
-                    $(elem).remove(); /* should I really remove the node ? */
+                    $(elem).remove(); // here, we cheat. everything is cloned, we just pretend the first isn't
                     break;
                 case 'function':
                     worker(that, r(elem));
@@ -210,6 +213,15 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         })[0].substr(that.dprefix.length + 1);
     },
     
+	updateValues: function (name) {
+		var that = this;
+		$('body').find(this._dpregex).
+			filter(function(e) {return that._getCode(this) == name}).
+			each(function() {that.processNode(this)});
+//		$('body').find('.deltatempgenerated').each(function () {this.remove()});
+		
+	},
+	
     _dropCurtain: function(){
         if (!this._curtains) {
             return
