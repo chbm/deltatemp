@@ -111,7 +111,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 		
         var that = this;
         
-        node.find(this._dpregex).each(function(i){
+        $(node).find(this._dpregex).each(function(i){
 			that.processNode(this, i);
         });
         delete (this._procs[id]);
@@ -120,7 +120,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 	},
 	
     processNode: function(node, id){        
-        var code = this._getCode(node);
+        var code = this._getCode($(node));
             if (code.substr(0, 1) == '$') {
                 this._processNodeMapVar(node, code.substr(1));
             }
@@ -156,7 +156,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
                                 e.text(r[n]);
                         }
 						if (n > 0) {
-							e.addClass('deltatempgenerted');
+							e.addClass('deltatempgenerated');
 						}
                         e.insertAfter($(elem));
                     }
@@ -201,7 +201,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
                 r = this._ns[v];
         }
         if (!r) {
-            $(elem).remove();
+            $(elem).hide();
         }
         
     },
@@ -215,11 +215,25 @@ DeltaTemp.prototype = DeltaTemp.fn = {
     
 	updateValues: function (name) {
 		var that = this;
-		$('body').find(this._dpregex).
-			filter(function(e) {return that._getCode(this) == name}).
-			each(function() {that.processNode(this)});
-//		$('body').find('.deltatempgenerated').each(function () {this.remove()});
-		
+		var f;
+		var objs = $('body').find('[class~='+that.dprefix+'_$'+name+']');
+		switch($type(this._ns[name])) {
+			case false:
+				// var doesn't exist
+				return;
+			case 'array':
+				f = function(e){
+					that.processTree(e)
+				};
+				objs = objs.parent();
+				objs.find('.deltatempgenerated').each(function () {$(this).remove()});
+				break;
+			default:
+				f = function(e){
+					that.processNode(e)
+				};
+		}
+		objs.each(function() {f(this)});		
 	},
 	
     _dropCurtain: function(){

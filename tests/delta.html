@@ -58,6 +58,11 @@
 				for (i = 0; i < 10; i++) {
 					dt.updateValues('func');
 				};
+				stuff.aopl[0].title = 'First Title';
+				stuff.aopl[2].body = 'this is the text body for the third article';
+				dt.updateValues('aopl');
+//				stuff.good = 1;
+//				dt.updateValues('good');
             });
         </script>
     </head>
@@ -106,6 +111,7 @@
         <div id='goawaytest3' class='deltatemp_test_badfunc'>
             more text to go away
         </div>
+		<div>there should be some text after this:</div>
         <div id='goawaytest4' class='deltatemp_test_good'>
             this text shouldn't go away
         </div>
