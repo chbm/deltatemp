@@ -120,17 +120,23 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 	},
 	
     processNode: function(node, id){        
-        var code = this._getCode($(node));
-            if (code.substr(0, 1) == '$') {
-                this._processNodeMapVar(node, code.substr(1));
+        var inst = this._parseCommand($(node));
+		if(!inst) {
+			return;
+		}
+            if (inst.op == '$') {
+                this._processNodeMapVar(node, inst.param);
             }
             else 
-                if (code.substr(0, 7) == 'include') {
-                    this._processNodeIncludeHtml(node, code.substr(8));
+                if (inst.op == 'include') {
+					if(inst.param.substr(0,1) == '$') {
+	                    this._processNodeIncludeHtml(node, this._ns[inst.param.substr(1)]);
+					} else
+	                    this._processNodeIncludeHtml(node, inst.param);
                 }
                 else 
-                    if (code.substr(0, 4) == 'test') {
-                        this._processNodeTestVar(node, code.substr(5));
+                    if (inst.op == 'test') {
+                        this._processNodeTestVar(node, inst.param);
                     }
     },
     
@@ -206,6 +212,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         
     },
     
+	// only used once, replace with parseCommand in the future
     _getCode: function(e){
         var that = this;
         return $(e).attr('className').split(' ').filter(function(el){
@@ -213,6 +220,31 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         })[0].substr(that.dprefix.length + 1);
     },
     
+	_parseCommand: function(e) {
+		var that = this;
+        var s = $(e).attr('className').split(' ').filter(function(el){
+            return el.substr(0, that.dprefix.length) == that.dprefix;
+        })[0];
+		var res = {};
+		if(s) {
+			var a = s.split(/_/);
+			if (a[1].substr(0, 1) == '$') {
+				res.op = a[1].substr(0, 1);
+				res.param = a[1].substr(1);
+			}
+			else {
+				res = {
+					'op': a[1],
+					'param': a[2]
+				};
+			}
+		} else {
+			res = false;
+		} 
+
+			return res;
+	},
+	
 	updateValues: function (name) {
 		var that = this;
 		var f;

@@ -44,7 +44,8 @@
                 }, {
                     'title': 'Third',
                     'body': '3333333blah blah aasdasdfadsf'
-                }]
+                }],
+				incfile: 'deltasub.html'
             };
             
             $(document).ready(function(){
@@ -115,7 +116,10 @@
         <div id='goawaytest4' class='deltatemp_test_good'>
             this text shouldn't go away
         </div>
-        <div id='includetest' style='border: solid black' class='deltatemp_include_deltasub.html'>
+        <div id='staticincludetest' style='border: solid black' class='deltatemp_include_deltasub.html'>
+            include div
+        </div>
+		<div id='varincludetest' style='border: solid black' class='deltatemp_include_$incfile'>
             include div
         </div>
     </body>
