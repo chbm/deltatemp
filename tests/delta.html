@@ -28,7 +28,7 @@
 					};
                 },
                 'bad': false,
-                'good': 1,
+                'good': false,
                 'badfunc': function(elem){
                     return 0;
                 },
@@ -62,8 +62,11 @@
 				stuff.aopl[0].title = 'First Title';
 				stuff.aopl[2].body = 'this is the text body for the third article';
 				dt.updateValues('aopl');
-//				stuff.good = 1;
-//				dt.updateValues('good');
+//				alert('test update test');
+				stuff.good = 1;
+				dt.updateValues('good');
+				stuff.incfile = 'simple.html';
+				dt.updateValues('incfile');
             });
         </script>
     </head>
@@ -103,7 +106,7 @@
             greek text
         </div>
         <div id='goawaytest' class='deltatemp_test foo'>
-            this text should go away<span id='goawaytestchild'>this text too</span>
+            this text should go away - <span id='goawaytestchild'>this text too</span> - 
             <span id='goawaytestchild2 class='deltatemp_$good'>this should go away and not be replaced</span>
         </div>
         <div id='goawaytest2' class='deltatemp_test_bad'>
@@ -112,9 +115,10 @@
         <div id='goawaytest3' class='deltatemp_test_badfunc'>
             more text to go away
         </div>
-		<div>there should be some text after this:</div>
-        <div id='goawaytest4' class='deltatemp_test_good'>
+		<div>there should be some text after this:
+        	<span id='goawaytest4' class='deltatemp_test_good'>
             this text shouldn't go away
+			</span>
         </div>
         <div id='staticincludetest' style='border: solid black' class='deltatemp_include_deltasub.html'>
             include div

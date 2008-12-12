@@ -207,8 +207,14 @@ DeltaTemp.prototype = DeltaTemp.fn = {
                 r = this._ns[v];
         }
         if (!r) {
-            $(elem).hide();
-        }
+			$(elem).data('display', $(elem).css('display') );
+            $(elem).css('display','none');
+			$(elem).addClass('deltatempremoved');
+        } else if($(elem).hasClass('deltatempremoved')) {
+			$(elem).css('display', $(elem).data('display') );
+			$(elem).removeClass('deltatempremoved');
+			$(elem).removeData('display');
+		}
         
     },
     
@@ -248,7 +254,22 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 	updateValues: function (name) {
 		var that = this;
 		var f;
-		var objs = $('body').find('[class~='+that.dprefix+'_$'+name+']');
+		
+		var objs = $('body').find(this._dpregex).filter(function(i){
+			var r = false;
+			var inst = that._parseCommand(this);
+			if(inst) {
+				switch(inst.op) {
+					case 'include':
+					r = (inst.param == '$'+name);
+					break;
+					default:
+					r = (inst.param == name);
+				}
+			}
+			return r;
+        });
+//		var objs = $('body').find('[class~='+that.dprefix+'_$'+name+']');
 		switch($type(this._ns[name])) {
 			case false:
 				// var doesn't exist
