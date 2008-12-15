@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Sample Delta Blog frontpage</title>
+		
+		<style>
+			div#sidebar {
+				position: absolute;
+				left: 0;
+				width: 20%;
+			}
+			
+			div#main {
+				position: absolute;
+				left: 20%;
+				width: 80%;
+			}
+		</style>		
+		<script src='../lib/jquery/jquery.js'>
+        </script>
+        <script src='../delta.js'>
+        </script>
+		
+		<script src='deltablog.js'>
+		</script>
+	</head>
+	<body>
+		<h1>The DeltaBlog</h1>
+		
+		<div id="sidebar">
+			<div id="now" class="deltatemp_$now"></div>
+		
+		<div id='loginbox' class="deltatemp_test_notloggedin">
+		<form action="#">
+			<input type="text" id="usernamebox" name="usernamebox">
+			<input type="submit" onclick="javascript:updatelogin()">
+		</form>	
+		</div>
+		<div id='userbox' class="deltatemp_test_loggedin">
+			hello, <span class="deltatemp_$username"></span>
+		</div>
+		</div>
+			
+		<div id="main">
+			<div id="posts">
+				<div id="post" class="deltatemp_$posts">
+					<div id="posttitle" class="deltatemp_$title posttitle">
+					</div>
+					<div id="postbody" class="deltatemp_$body postbody">
+					</div>
+					<div id="postabout" class="deltatemp_$about postabout">
+					</div>
+				</div>
+			</div>
+		</div>	
+	</body>
+</html>
