@@ -16,7 +16,6 @@ function updateLogin() {
 	contents.notloggedin = false;
 	dt.updateValues('notloggedin');
 	contents.loggedin = true;
-//	dt.updateValues('username'); // shouldn't be needed!!
 	dt.updateValues('loggedin');	
 }
 

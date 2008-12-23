@@ -17,15 +17,15 @@
         <script src='../delta.js'>
         </script>
         <script>
-        	counter = 0;
+            counter = 0;
             stuff = {
                 'aaa': 'din text',
                 'vec': ['ele1', 'ele 2', 3],
                 'func': function(elem){
                     return function(elem){
-						counter++;
-						return counter;
-					};
+                        counter++;
+                        return counter;
+                    };
                 },
                 'bad': false,
                 'good': false,
@@ -45,85 +45,198 @@
                     'title': 'Third',
                     'body': '3333333blah blah aasdasdfadsf'
                 }],
-				incfile: 'deltasub.html'
+                incfile: 'deltasub.html'
             };
             
+			dt = false;			
             $(document).ready(function(){
-                var dt = new DeltaTemp(stuff);
+                dt = new DeltaTemp(stuff);
                 dt.processDocument();
-				stuff.aaa = 'DIN TEXT';
-	//			alert('din text is going to update');
-				dt.updateValues('aaa');
-				dt.updateValues('now');
-				var i;
-				for (i = 0; i < 10; i++) {
-					dt.updateValues('func');
-				};
-				stuff.aopl[0].title = 'First Title';
-				stuff.aopl[2].body = 'this is the text body for the third article';
-				dt.updateValues('aopl');
-//				alert('test update test');
-				stuff.good = 1;
-				dt.updateValues('good');
-				stuff.incfile = 'simple.html';
-				dt.updateValues('incfile');
             });
+			
+			function updateTest() {
+				dt.updateValues('now');
+				stuff.bad = true;
+				stuff.badfunc = function(elem) {
+					return 1;
+				}
+				stuff.aaa = 'other din text';
+				dt.updateValues('bad');
+				dt.updateValues('badfunc');
+				dt.updateValues('aaa');
+
+                var i;
+                for (i = 0; i < 10; i++) {
+                    dt.updateValues('func');
+                };
+                stuff.aopl[0].title = 'First Title';
+                stuff.aopl[2].body = 'this is the text body for the third article';
+                dt.updateValues('aopl');
+                //				alert('test update test');
+                stuff.good = 1;
+                dt.updateValues('good');
+                stuff.incfile = 'simple.html';
+                dt.updateValues('incfile');
+			}
+			
         </script>
     </head>
     <body>
-        <div id='clock'>
-            Page rendered at: <span id='nowtime' class="deltatemp_$now red"></span>
-        </div>
-        <div id='test' class="deltatemp_$aaa">
-            static text
-        </div>
-        <div id='replacefail' class="deltatemp_$notexist">
-            this text will not be replaced
-        </div>
-        <div id='notreplaced' class='pretty class'>
-            this is not be touched either
-        </div>
-		<div>this list will have 3 elements</div>
-        <ul>
-            <li id='replacedlistelement' class='deltatemp_$vec'>
-                replace this
-            </li>
-        </ul>
-        <div id='articles'>
-            ARTICLES:::
-            <div id='article' class='deltatemp_$aopl'>
-                Title: <span id='articletitle' class='deltatemp_$title'></span>
-                Body: <span id='articlebody' class='deltatemp_$body'></span>
-            </div>
-            :::: END OF ARTICLES
-        </div>
-		<div>array maping of divs</div>
-        <div id='divmap' class='deltatemp_$vec'>
-            this div will become a list
-        </div>
-		<div>this text comes from a function that returns a function</div>
-        <div id='functest' class='deltatemp_$func'>
-            greek text
-        </div>
-        <div id='goawaytest' class='deltatemp_test foo'>
-            this text should go away - <span id='goawaytestchild'>this text too</span> - 
-            <span id='goawaytestchild2 class='deltatemp_$good'>this should go away and not be replaced</span>
-        </div>
-        <div id='goawaytest2' class='deltatemp_test_bad'>
-            more text to go away
-        </div>
-        <div id='goawaytest3' class='deltatemp_test_badfunc'>
-            more text to go away
-        </div>
-		<div>there should be some text after this:
-        	<span id='goawaytest4' class='deltatemp_test_good'>
-            this text shouldn't go away
-			</span>
-        </div>
-        <div id='staticincludetest' style='border: solid black' class='deltatemp_include_deltasub.html'>
-            include div
-        </div>
-		<div id='varincludetest' style='border: solid black' class='deltatemp_include_$incfile'>
-            include div
-        </div>
+        <table>
+            <tr>
+                <td>
+                    clock
+                </td>
+                <td>
+                    <div id='clock'>
+                        Page rendered at: <span id='nowtime' class="deltatemp_$now red"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    change from "static text" to something else
+                </td>
+                <td>
+                    <div id='test' class="deltatemp_$aaa">
+                        static text
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    this text will not be replaced
+                </td>
+                <td>
+                    <div id='replacefail' class="deltatemp_$notexist">
+                        this text will not be replaced
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    this is not to be touched either
+                </td>
+                <td>
+                    <div id='notreplaced' class='pretty class'>
+                        this is not be touched either
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        this list will have 3 elements
+                    </div>
+                </td>
+                <td>
+                    <ul>
+                        <li id='replacedlistelement' class='deltatemp_$vec'>
+                            replace this
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    PropList map test
+                </td>
+                <td>
+                    <div id='articles'>
+                        ARTICLES:::
+                        <div id='article' class='deltatemp_$aopl'>
+                            Title: <span id='articletitle' class='deltatemp_$title'></span>
+                            Body: <span id='articlebody' class='deltatemp_$body'></span>
+                        </div>
+                        :::: END OF ARTICLES
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        array maping of divs
+                    </div>
+                </td>
+                <td>
+                    <div id='divmap' class='deltatemp_$vec'>
+                        this div will become a list
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        this text comes from a function that returns a function
+                    </div>
+                </td>
+                <td>
+                    <div id='functest' class='deltatemp_$func'>
+                        greek text
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    test op test - removed elements
+                </td>
+                <td>
+                    <div id='goawaytest' class='deltatemp_test_foo'>
+                        this text should go away - <span id='goawaytestchild'>this text too</span>
+                        - <span id='goawaytestchild2 class='deltatemp_$good'>this should go away and not be replaced</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    test op test 2 - removed elements
+                </td>
+                <td>
+                    <div id='goawaytest2' class='deltatemp_test_bad'>
+                        more text to go away
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    test op test 3 - removed elements
+                </td>
+                <td>
+                    <div id='goawaytest3' class='deltatemp_test_badfunc'>
+                        more text to go away
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    test op test 4 - not removed elements
+                </td>
+                <td>
+                    <div>
+                        there should be some text after this:<span id='goawaytest4' class='deltatemp_test_good'>this text shouldn't go away</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    include static file
+                </td>
+                <td>
+                    <div id='staticincludetest' style='border: solid black' class='deltatemp_include_deltasub.html'>
+                        include div
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    include from variable
+                </td>
+                <td>
+                    <div id='varincludetest' style='border: solid black' class='deltatemp_include_$incfile'>
+                        include div
+                    </div>
+                </td>
+            </tr>
+        </table>
+		<a href="#" onclick='javascript:updateTest()'>click here for update tests</a>
     </body>
