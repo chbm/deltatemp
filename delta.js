@@ -283,7 +283,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 				objs.find('.deltatempgenerated').each(function () {$(this).remove()});
 				break;
 			default:
-				if (ins.op == 'test') {
+				if (inst.op == 'test') {
 					f = function(e) {
 						that.processTree(e);
 						that.processNode(e);
