@@ -227,6 +227,9 @@ DeltaTemp.prototype = DeltaTemp.fn = {
     },
     
 	_parseCommand: function(e) {
+		if(! $(e).attr('className') ) {
+			return false;
+		}
 		var that = this;
         var s = $(e).attr('className').split(' ').filter(function(el){
             return el.substr(0, that.dprefix.length) == that.dprefix;
@@ -270,31 +273,50 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 			}
 			return r;
         });
-//		var objs = $('body').find('[class~='+that.dprefix+'_$'+name+']');
-		switch($type(this._ns[name])) {
-			case false:
-				// var doesn't exist
-				return;
-			case 'array':
-				f = function(e){
-					that.processTree(e)
-				};
-				objs = objs.parent();
-				objs.find('.deltatempgenerated').each(function () {$(this).remove()});
-				break;
-			default:
-				if (inst.op == 'test') {
-					f = function(e) {
-						that.processTree(e);
-						that.processNode(e);
-					}
-				} else {
-					f = function(e){
-						that.processNode(e)
-					};
+/*
+        var f = false;
+        switch ($type(that._ns[name])) {
+            case false:
+                // var doesn't exist
+                return;case 'array':
+                f = function(e){
+                    that.processTree(e)
+                };
+                var o = this.parent();
+                o.find('.deltatempgenerated').each(function(){
+                    $(this).remove()
+                });
+                break;
+            default:
+                    f = function(e){
+                        that.processNode(e)
+                    };
+        }
+
+*/
+		objs.each(function() {		
+/*
+			inst = that._parseCommand(this);
+            if (inst.op == 'test') {
+				that.processTree(this);
+			}
+			f(this);
+*/
+			var o = this;
+			if($type(that._ns[name]) == 'array' &&
+				inst.op == '$') {
+					o = $(this).parent();					
+					o.find('.deltatempgenerated').each(function(){
+                    	$(this).remove()
+                	});
 				}
-		}
-		objs.each(function() {f(this)});		
+			that.processTree(o);
+			that.processNode(o);
+		});
+	},
+	
+	getVariables: function() {
+		return this._ns;
 	},
 	
     _dropCurtain: function(){

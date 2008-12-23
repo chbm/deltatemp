@@ -17,8 +17,11 @@
         <script src='../delta.js'>
         </script>
         <script>
-            counter = 0;
-            stuff = {
+            counter = 0;            
+			dt = false;	
+					
+            $(document).ready(function(){
+				             var stuff = {
                 'aaa': 'din text',
                 'vec': ['ele1', 'ele 2', 3],
                 'func': function(elem){
@@ -47,41 +50,56 @@
                 }],
                 incfile: 'deltasub.html'
             };
-            
-			dt = false;			
-            $(document).ready(function(){
+
                 dt = new DeltaTemp(stuff);
                 dt.processDocument();
+				
+
             });
 			
 			function updateTest() {
+				var stuff = dt.getVariables();
+				
+				$('#clock').parent().parent().addClass('red');
 				dt.updateValues('now');
+
+				stuff.aopl[0].title = 'First Title';
+                stuff.aopl[2].body = 'this is the text body for the third article';
+				$('#articles').parent().parent().addClass('red');
+                dt.updateValues('aopl');
+                //				alert('test update test');
+
 				stuff.bad = true;
 				stuff.badfunc = function(elem) {
 					return 1;
 				}
 				stuff.aaa = 'other din text';
+				$('#goawaytest2').parent().parent().addClass('red');
+				$('#goawaytest3').parent().parent().addClass('red');
 				dt.updateValues('bad');
 				dt.updateValues('badfunc');
+				$('#test').parent().parent().addClass('red');
 				dt.updateValues('aaa');
 
+
+				$('#functest').parent().parent().addClass('red');
                 var i;
                 for (i = 0; i < 10; i++) {
                     dt.updateValues('func');
                 };
-                stuff.aopl[0].title = 'First Title';
-                stuff.aopl[2].body = 'this is the text body for the third article';
-                dt.updateValues('aopl');
-                //				alert('test update test');
+
                 stuff.good = 1;
+				$('#goawaytest').parent().parent().addClass('red');				
                 dt.updateValues('good');
                 stuff.incfile = 'simple.html';
+				$('#varincludetest').parent().parent().addClass('red');
                 dt.updateValues('incfile');
 			}
 			
         </script>
     </head>
     <body>
+		<span onclick='javascript:updateTest()'>--- click here for update tests</span>
         <table>
             <tr>
                 <td>
@@ -238,5 +256,4 @@
                 </td>
             </tr>
         </table>
-		<a href="#" onclick='javascript:updateTest()'>click here for update tests</a>
     </body>
