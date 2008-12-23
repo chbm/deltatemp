@@ -11,12 +11,12 @@ var contents = {
 }
 var dt;
 
-function updatelogin() {
+function updateLogin() {
 	contents.username = $('#usernamebox').val();
 	contents.notloggedin = false;
 	dt.updateValues('notloggedin');
 	contents.loggedin = true;
-	dt.updateValues('username'); // shouldn't be needed!!
+//	dt.updateValues('username'); // shouldn't be needed!!
 	dt.updateValues('loggedin');	
 }
 

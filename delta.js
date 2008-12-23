@@ -254,10 +254,11 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 	updateValues: function (name) {
 		var that = this;
 		var f;
+		var inst;
 		
 		var objs = $('body').find(this._dpregex).filter(function(i){
 			var r = false;
-			var inst = that._parseCommand(this);
+			inst = that._parseCommand(this);
 			if(inst) {
 				switch(inst.op) {
 					case 'include':
@@ -282,9 +283,16 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 				objs.find('.deltatempgenerated').each(function () {$(this).remove()});
 				break;
 			default:
-				f = function(e){
-					that.processNode(e)
-				};
+				if (ins.op == 'test') {
+					f = function(e) {
+						that.processTree(e);
+						that.processNode(e);
+					}
+				} else {
+					f = function(e){
+						that.processNode(e)
+					};
+				}
 		}
 		objs.each(function() {f(this)});		
 	},
