@@ -207,13 +207,15 @@ DeltaTemp.prototype = DeltaTemp.fn = {
                 r = this._ns[v];
         }
         if (!r) {
-			$(elem).data('display', $(elem).css('display') );
+			$(elem).data('dtdisplay', $(elem).css('display') );
             $(elem).css('display','none');
 			$(elem).addClass('deltatempremoved');
         } else if($(elem).hasClass('deltatempremoved')) {
-			$(elem).css('display', $(elem).data('display') );
+			// $(elem).css('display', $(elem).data('dtdisplay') ); 
+			// BUG $.data is failing for some reason .. 
+			$(elem).css('display', 'block');
 			$(elem).removeClass('deltatempremoved');
-			$(elem).removeData('display');
+			$(elem).removeData('dtdisplay');
 		}
         
     },
@@ -295,9 +297,9 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 
 */
 		objs.each(function() {		
-/*
 			inst = that._parseCommand(this);
-            if (inst.op == 'test') {
+/*
+             if (inst.op == 'test') {
 				that.processTree(this);
 			}
 			f(this);
