@@ -58,15 +58,19 @@
                 dt.processDocument();
             }
 
+			function redify(id) {
+				$(id).parent().parent().addClass('red');
+			}
+
 			function updateTest() {
 				var otherstuff = dt.getVariables();
 				
-				$('#clock').parent().parent().addClass('red');
+				redify('#clock');
 				dt.updateValues('now');
 
 				otherstuff.aopl[0].title = 'First Title';
                 otherstuff.aopl[2].body = 'this is the text body for the third article';
-				$('#articles').parent().parent().addClass('red');
+				redify('#articles');
                 dt.updateValues('aopl');
                 //				alert('test update test');
 
@@ -75,15 +79,15 @@
 					return 1;
 				}
 				otherstuff.aaa = 'other din text';
-				$('#goawaytest2').parent().parent().addClass('red');
-				$('#goawaytest3').parent().parent().addClass('red');
+				redify('#goawaytest2');
+				redify('#goawaytest3');
 				dt.updateValues('bad');
 				dt.updateValues('badfunc');
-				$('#test').parent().parent().addClass('red');
+				redify('#test');
 				dt.updateValues('aaa');
 
 
-				$('#functest').parent().parent().addClass('red');
+				redify('#functest');
                 var i;
                 for (i = 0; i < 10; i++) {
                     dt.updateValues('func');
@@ -91,7 +95,7 @@
 
                 otherstuff.good = 1;
                 otherstuff.incfile = 'simple.html';
-				$('#varincludetest').parent().parent().addClass('red');
+				redify('#varincludetest');
                 dt.updateValues('incfile');
 			}
 			
