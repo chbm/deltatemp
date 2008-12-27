@@ -72,6 +72,8 @@ DeltaTemp = function(ns, curtains){
     this._procs = {};
     this.nextid = 0;
 	
+	this._elemCache = {};
+	
     this.init();
 };
 
@@ -206,16 +208,15 @@ DeltaTemp.prototype = DeltaTemp.fn = {
             default:
                 r = this._ns[v];
         }
+		var jElem = $(elem);
         if (!r) {
-			$(elem).data('dtdisplay', $(elem).css('display') );
-            $(elem).css('display','none');
-			$(elem).addClass('deltatempremoved');
-        } else if($(elem).hasClass('deltatempremoved')) {
-			// $(elem).css('display', $(elem).data('dtdisplay') ); 
-			// BUG $.data is failing for some reason .. 
-			$(elem).css('display', 'block');
-			$(elem).removeClass('deltatempremoved');
-			$(elem).removeData('dtdisplay');
+			this._elemCache[jElem.attr('id')] = jElem.css('display') ;
+            jElem.css('display','none');
+			jElem.addClass('deltatempremoved');
+        } else if(jElem.hasClass('deltatempremoved')) {
+			jElem.css('display', this._elemCache[jElem.attr('id')] ); 
+			jElem.removeClass('deltatempremoved');
+			this._elemCache[jElem.attr('id')] = null;
 		}
         
     },

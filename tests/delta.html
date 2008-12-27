@@ -17,11 +17,9 @@
         <script src='../delta.js'>
         </script>
         <script>
-            counter = 0;            
-			dt = false;	
-					
-            $(document).ready(function(){
-				             var stuff = {
+            counter = 0;    
+			
+			var stuff = {
                 'aaa': 'din text',
                 'vec': ['ele1', 'ele 2', 3],
                 'func': function(elem){
@@ -49,31 +47,34 @@
                     'body': '3333333blah blah aasdasdfadsf'
                 }],
                 incfile: 'deltasub.html'
-            };
-
-                dt = new DeltaTemp(stuff);
+            };      
+			dt = new DeltaTemp(stuff);
+					 
+		   $(document).ready(function(){
+		   	pageFill();
+		   } );
+		   
+		   function pageFill() {
                 dt.processDocument();
-				
+            }
 
-            });
-			
 			function updateTest() {
-				var stuff = dt.getVariables();
+				var otherstuff = dt.getVariables();
 				
 				$('#clock').parent().parent().addClass('red');
 				dt.updateValues('now');
 
-				stuff.aopl[0].title = 'First Title';
-                stuff.aopl[2].body = 'this is the text body for the third article';
+				otherstuff.aopl[0].title = 'First Title';
+                otherstuff.aopl[2].body = 'this is the text body for the third article';
 				$('#articles').parent().parent().addClass('red');
                 dt.updateValues('aopl');
                 //				alert('test update test');
 
-				stuff.bad = true;
-				stuff.badfunc = function(elem) {
+				otherstuff.bad = true;
+				otherstuff.badfunc = function(elem) {
 					return 1;
 				}
-				stuff.aaa = 'other din text';
+				otherstuff.aaa = 'other din text';
 				$('#goawaytest2').parent().parent().addClass('red');
 				$('#goawaytest3').parent().parent().addClass('red');
 				dt.updateValues('bad');
@@ -88,15 +89,18 @@
                     dt.updateValues('func');
                 };
 
-                stuff.good = 1;
-                stuff.incfile = 'simple.html';
+                otherstuff.good = 1;
+                otherstuff.incfile = 'simple.html';
 				$('#varincludetest').parent().parent().addClass('red');
                 dt.updateValues('incfile');
 			}
 			
+			
+			
         </script>
     </head>
     <body>
+    	<span onclick='javascript:alert($("#goawaytest2").data("dtdisplay"))'>show data</span>
 		<span onclick='javascript:updateTest()'>--- click here for update tests</span>
         <table>
             <tr>
