@@ -82,19 +82,6 @@ DeltaTemp.prototype = DeltaTemp.fn = {
     _dpregex: '*[className^="deltatemp"]',
     
     init: function(){
-        /*        var cssObj = {
-         position: "absolute",
-         top: 0,
-         left: 0,
-         width: "100%",
-         height: "100%",
-         background: "yellow",
-         'z-index': 99,
-         'text-align': "center"
-         }
-         $('body').append('<div id="deltatempcurtain">loading ...</div>');
-         $('#deltatempcurtain').css(cssObj).show();
-         */
         this._dropCurtain();
     },
     
@@ -109,7 +96,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         this._procs[id] = 1;
         this.nextid = id + 1;
         
-//		this.treeroot = node;
+		this.treeroot = node;
 		
         var that = this;
         
@@ -276,35 +263,8 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 			}
 			return r;
         });
-/*
-        var f = false;
-        switch ($type(that._ns[name])) {
-            case false:
-                // var doesn't exist
-                return;case 'array':
-                f = function(e){
-                    that.processTree(e)
-                };
-                var o = this.parent();
-                o.find('.deltatempgenerated').each(function(){
-                    $(this).remove()
-                });
-                break;
-            default:
-                    f = function(e){
-                        that.processNode(e)
-                    };
-        }
-
-*/
 		objs.each(function() {		
 			inst = that._parseCommand(this);
-/*
-             if (inst.op == 'test') {
-				that.processTree(this);
-			}
-			f(this);
-*/
 			var o = this;
 			if($type(that._ns[name]) == 'array' &&
 				inst.op == '$') {
