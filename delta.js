@@ -65,9 +65,7 @@ function $updateID(e, n){
 
 DeltaTemp = function(ns, curtains){
     this._ns = ns;
-    this._curtains = curtains;
- 
- 	this.treeroot = $('body');
+    this._curtains = curtains == undefined ? true : curtains;
  
     this._procs = {};
     this.nextid = 0;
@@ -82,10 +80,10 @@ DeltaTemp.prototype = DeltaTemp.fn = {
     _dpregex: '*[className^="deltatemp"]',
     
     init: function(){
-        this._dropCurtain();
     },
     
     processDocument: function(){
+        this._dropCurtain();
         this.processTree($('body'));
     },
     
@@ -203,7 +201,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         } else if(jElem.hasClass('deltatempremoved')) {
 			jElem.css('display', this._elemCache[jElem.attr('id')] ); 
 			jElem.removeClass('deltatempremoved');
-			this._elemCache[jElem.attr('id')] = null;
+			delete this._elemCache[jElem.attr('id')];
 		}
         
     },
@@ -286,7 +284,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         if (!this._curtains) {
             return
         };
-        $(this.treeroot).hide();
+        $('body').hide();
     },
     
     _raiseCurtain: function(){
@@ -298,8 +296,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
             np++
         };
         if (np == 0) {
-            /*            $('#deltatempcurtain').slideUp();*/
-            $(this.treeroot).fadeIn("slow");
+            $('body').show();
         }
     }
 }
