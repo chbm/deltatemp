@@ -7,16 +7,33 @@ var contents = {
     },
 	loggedin: false,
 	notloggedin: true, //ok this sucks
-	username: ''	
+	username: '',
+	morepostsnotloaded: true	
 }
 var dt;
 
 function updateLogin() {
-	contents.username = $('#usernamebox').val();
+	contents.username = 'logging in ' + $('#usernamebox').val() + ' ...';
 	contents.notloggedin = false;
 	dt.updateValues('notloggedin');
 	contents.loggedin = true;
 	dt.updateValues('loggedin');	
+	setTimeout(function() {
+		contents.username = 'hello, ' + $('#usernamebox').val();
+		dt.updateValues('username');
+	}, 3000);	
+	return false;
+}
+
+function showMorePosts() {
+	contents.morepostsnotloaded = false;
+	dt.updateValues('morepostsnotloaded');
+	
+	$.getJSON('moreposts.js', function(data) {
+		
+		jQuery.each(data, function() {contents.posts.push(this)});
+		dt.updateValues('posts');	
+	} );
 }
 
 $(document).ready(function() {

@@ -7,7 +7,7 @@
 		<style>
 			div#sidebar {
 				position: absolute;
-				left: 0;
+				left: 3px;
 				width: 20%;
 			}
 			
@@ -36,13 +36,13 @@
 			<div id="now" class="deltatemp_$now"></div>
 		
 		<div id='loginbox' class="deltatemp_test_notloggedin">
-		<form action="#">
+		<form action="#" onsubmit='return updateLogin()'>
 			<input type="text" id="usernamebox" name="usernamebox">
-			<input type="submit" onclick="javascript:updatelogin()">
+			<input type="submit" value="Login">
 		</form>	
 		</div>
 		<div id='userbox' class="deltatemp_test_loggedin">
-			hello, <span class="deltatemp_$username"></span>
+			<span class="deltatemp_$username">logging in....</span>
 		</div>
 		</div>
 			
@@ -56,6 +56,9 @@
 					<div id="postabout" class="deltatemp_$about postabout">
 					</div>
 				</div>
+			</div>
+			<div id="morepostsbutton" class='deltatemp_test_morepostsnotloaded'>
+				<span onclick="showMorePosts()">---click here for more posts---</span>
 			</div>
 		</div>	
 	</body>
