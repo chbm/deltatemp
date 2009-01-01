@@ -243,37 +243,45 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 	},
 	
 	updateValues: function (name) {
-		var that = this;
-		var f;
-		var inst;
-		
-		var objs = $('body').find(this._dpregex).filter(function(i){
-			var r = false;
-			inst = that._parseCommand(this);
-			if(inst) {
-				switch(inst.op) {
-					case 'include':
-					r = (inst.param == '$'+name);
-					break;
-					default:
-					r = (inst.param == name);
+		if (name == undefined) {
+			$('body').find('.deltatempgenerated').each(function(){
+				$(this).remove()
+			});
+			this.processTree($('body'));
+		}
+		else {
+			var that = this;
+			var f;
+			var inst;
+			
+			var objs = $('body').find(this._dpregex).filter(function(i){
+				var r = false;
+				inst = that._parseCommand(this);
+				if (inst) {
+					switch (inst.op) {
+						case 'include':
+							r = (inst.param == '$' + name);
+							break;
+						default:
+							r = (inst.param == name);
+					}
 				}
-			}
-			return r;
-        });
-		objs.each(function() {		
-			inst = that._parseCommand(this);
-			var o = this;
-			if($type(that._ns[name]) == 'array' &&
+				return r;
+			});
+			objs.each(function(){
+				inst = that._parseCommand(this);
+				var o = this;
+				if ($type(that._ns[name]) == 'array' &&
 				inst.op == '$') {
-					o = $(this).parent();					
+					o = $(this).parent();
 					o.find('.deltatempgenerated').each(function(){
-                    	$(this).remove()
-                	});
+						$(this).remove()
+					});
 				}
-			that.processTree(o);
-			that.processNode(o);
-		});
+				that.processTree(o);
+				that.processNode(o);
+			});
+		}
 	},
 	
 	getVariables: function() {

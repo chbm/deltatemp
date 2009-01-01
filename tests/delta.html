@@ -29,7 +29,7 @@
                     };
                 },
                 'bad': false,
-                'good': false,
+                'good': true,
                 'badfunc': function(elem){
                     return 0;
                 },
@@ -78,14 +78,11 @@
 				otherstuff.badfunc = function(elem) {
 					return 1;
 				}
+
 				otherstuff.aaa = 'other din text';
 				redify('#goawaytest2');
 				redify('#goawaytest3');
-				dt.updateValues('bad');
-				dt.updateValues('badfunc');
 				redify('#test');
-				dt.updateValues('aaa');
-
 
 				redify('#functest');
                 var i;
@@ -96,10 +93,8 @@
                 otherstuff.good = 1;
                 otherstuff.incfile = 'simple.html';
 				redify('#varincludetest');
-                dt.updateValues('incfile');
+                dt.updateValues();
 			}
-			
-			
 			
         </script>
     </head>
