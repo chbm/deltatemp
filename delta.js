@@ -195,9 +195,11 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         }
 		var jElem = $(elem);
         if (!r) {
-			this._elemCache[jElem.attr('id')] = jElem.css('display') ;
-            jElem.css('display','none');
-			jElem.addClass('deltatempremoved');
+			if (!jElem.hasClass('deltatempremoved')) {
+				this._elemCache[jElem.attr('id')] = jElem.css('display') ;
+            	jElem.css('display','none');
+				jElem.addClass('deltatempremoved');
+			}
         } else if(jElem.hasClass('deltatempremoved')) {
 			jElem.css('display', this._elemCache[jElem.attr('id')] ); 
 			jElem.removeClass('deltatempremoved');
