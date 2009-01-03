@@ -37,12 +37,15 @@
                     return Date().toString();
                 },
                 aopl: [{
+					_id: 'insertedid1',
                     'title': 'First',
                     'body': '11111blah blah blah'
                 }, {
+					_id: 'insertedid2',
                     'title': 'Second',
                     'body': '2222222blah blah blah'
                 }, {
+					_id: function(e, n) {e.addClass('touchedfromidfunction');return 'insertedidfromfunction'+n; },
                     'title': 'Third',
                     'body': '3333333blah blah aasdasdfadsf'
                 }],

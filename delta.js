@@ -140,10 +140,18 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 								that._fullns = that._ns;
 								that._ns = r[n];
 								that.processTree(e);
-								that._ns = that._fullns;
 								e.find(that._dpregex).each(function () {
 									$updateID(this,n);
 								});
+								if(that._ns._id) {
+									if ($type(that._ns._id) == 'function') {
+										e.attr('id', that._ns._id(e, n));										
+									}
+									else {
+										e.attr('id', that._ns._id);
+									}
+								}
+								that._ns = that._fullns;
                                 break;
                             default:
                                 e.text(r[n]);
