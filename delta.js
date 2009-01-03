@@ -70,6 +70,9 @@ DeltaTemp = function(ns, curtains){
     this._procs = {};
     this.nextid = 0;
 	
+	this.preproc = this.postproc = undefined;
+	
+	
 	this._elemCache = {};
 	
     this.init();
@@ -106,25 +109,32 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 		
 	},
 	
-    processNode: function(node, id){        
-        var inst = this._parseCommand($(node));
-		if(!inst) {
-			return;
-		}
-            if (inst.op == '$') {
-                this._processNodeMapVar(node, inst.param);
+    processNode: function(node, id){    
+		var jnode = $(node);    
+        var inst = this._parseCommand(jnode);
+        if (!inst) {
+            return;
+        }
+        
+        if (this.preproc) {
+            this.preproc(jnode, inst.param);
+        }
+        if (inst.op == '$') {
+            this._processNodeMapVar(jnode, inst.param);
+        }
+        else if (inst.op == 'include') {
+            if (inst.param.substr(0, 1) == '$') {
+                this._processNodeIncludeHtml(jnode, this._ns[inst.param.substr(1)]);
             }
             else 
-                if (inst.op == 'include') {
-					if(inst.param.substr(0,1) == '$') {
-	                    this._processNodeIncludeHtml(node, this._ns[inst.param.substr(1)]);
-					} else
-	                    this._processNodeIncludeHtml(node, inst.param);
-                }
-                else 
-                    if (inst.op == 'test') {
-                        this._processNodeTestVar(node, inst.param);
-                    }
+                this._processNodeIncludeHtml(jnode, inst.param);
+        }
+        else if (inst.op == 'test') {
+            this._processNodeTestVar(jnode, inst.param);
+        }
+        if (this.postproc) {
+            this.postproc(jnode, inst.param);
+        }
     },
     
     _processNodeMapVar: function(elem, v){
@@ -316,5 +326,12 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         if (np == 0) {
             $('body').show();
         }
-    }
+    },
+	
+	setPreProcess: function(f) {
+		this.preproc = f;
+	},
+	setPostProcess: function(f) {
+		this.postproc = f;
+	}
 }

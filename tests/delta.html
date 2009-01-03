@@ -11,6 +11,10 @@
             .red {
                 color: red;
             }
+			
+			.green {
+				color: green;
+			}
         </style>
         <script src='../lib/jquery/jquery.js'>
         </script>
@@ -64,16 +68,30 @@
 			function redify(id) {
 				$(id).parent().parent().addClass('red');
 			}
+			function deredify(e) {
+				e.parent().parent().removeClass('red');
+			}
+			function greenify(e) {
+				e.parent().parent().addClass('green');
+			}
 
 			function updateTest() {
 				var otherstuff = dt.getVariables();
 				
 				redify('#clock');
+				redify('#articles');
+				redify('#goawaytest2');
+				redify('#goawaytest3');
+				redify('#test');
+				redify('#functest');
+				redify('#varincludetest');
+				dt.setPreProcess(function(e,v) {deredify(e)});
+				dt.setPostProcess(function(e,v) {greenify(e);e.addClass('onpostproc'+v);e.addClass('green')});
+
 				dt.updateValues('now');
 
 				otherstuff.aopl[0].title = 'First Title';
                 otherstuff.aopl[2].body = 'this is the text body for the third article';
-				redify('#articles');
                 dt.updateValues('aopl');
                 //				alert('test update test');
 
@@ -83,11 +101,7 @@
 				}
 
 				otherstuff.aaa = 'other din text';
-				redify('#goawaytest2');
-				redify('#goawaytest3');
-				redify('#test');
 
-				redify('#functest');
                 var i;
                 for (i = 0; i < 10; i++) {
                     dt.updateValues('func');
@@ -95,7 +109,6 @@
 
                 otherstuff.good = 1;
                 otherstuff.incfile = 'simple.html';
-				redify('#varincludetest');
                 dt.updateValues();
 			}
 			
