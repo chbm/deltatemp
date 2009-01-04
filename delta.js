@@ -291,12 +291,21 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 				inst = that._parseCommand(this);
 				var o = this;
 				if ($type(that._ns[name]) == 'array' &&
-				inst.op == '$') {
+					inst.op == '$') {
 					o = $(this).parent();
-					o.find('.deltatempgenerated').each(function(){
-						$(this).remove()
-					});
 				}
+				/*
+				 * FIXME: this is not particularly pretty, we remove
+				 * generated children so structures like 
+				 * <div dt_test_foo><div dt_$foo>
+				 * don't recurse when you updateValues(foo)
+				 * We should prune the elements from the list
+				 * instead
+				 */  
+                $(o).find('.deltatempgenerated').each(function(){
+                    $(this).remove()
+                });
+				
 				that.processTree(o);
 				that.processNode(o);
 			});
