@@ -171,7 +171,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 						}
                         e.insertAfter($(elem));
                     }
-                    $(elem).remove(); // here, we cheat. everything is cloned, we just pretend the first isn't
+                    if (r.length) $(elem).remove(); // here, we cheat. everything is cloned, we just pretend the first isn't
                     break;
                 case 'function':
                     worker(that, r(elem));
