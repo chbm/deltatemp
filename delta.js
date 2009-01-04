@@ -199,8 +199,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         var r = false;
         switch ($type(this._ns[v])) {
             case 'array':
-                /* grab the first value, whatever */
-                r = this._ns[v][0];
+                r = this._ns[v].length;
                 break;
             case 'function':
                 r = this._ns[v](elem);
