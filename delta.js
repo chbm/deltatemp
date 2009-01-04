@@ -139,6 +139,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
     
     _processNodeMapVar: function(elem, v){
         var worker = function(that, r){
+			if (!r) return;
             switch ($type(r)) {
                 case 'array':
                     for (n = r.length - 1; n > -1; n--) {
