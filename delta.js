@@ -80,7 +80,7 @@ DeltaTemp = function(ns, curtains){
 
 DeltaTemp.prototype = DeltaTemp.fn = {
     dprefix: 'deltatemp',
-    _dpregex: '*[className^="deltatemp"]',
+    _dpregex: '*[className^="deltatemp_"]',
     
     init: function(){
     },
