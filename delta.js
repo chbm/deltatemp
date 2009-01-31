@@ -262,7 +262,12 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 			return res;
 	},
 	
-	updateValues: function (name) {
+	// deprecated
+	updateValues: function(name) {
+		return this.updateTree(name);
+	},
+	
+	updateTree: function (name) {
 		if (name == undefined) {
 			$('body').find('.deltatempgenerated').each(function(){
 				$(this).remove()
@@ -270,47 +275,56 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 			this.processTree($('body'));
 		}
 		else {
-			var that = this;
-			var f;
-			var inst;
-			
-			var objs = $('body').find(this._dpregex).filter(function(i){
-				var r = false;
-				inst = that._parseCommand(this);
-				if (inst) {
-					switch (inst.op) {
-						case 'include':
-							r = (inst.param == '$' + name);
-							break;
-						default:
-							r = (inst.param == name);
-					}
-				}
-				return r;
-			});
-			objs.each(function(){
-				inst = that._parseCommand(this);
-				var o = this;
-				if ($type(that._ns[name]) == 'array' &&
-					inst.op == '$') {
-					o = $(this).parent();
-				}
-				/*
-				 * FIXME: this is not particularly pretty, we remove
-				 * generated children so structures like 
-				 * <div dt_test_foo><div dt_$foo>
-				 * don't recurse when you updateValues(foo)
-				 * We should prune the elements from the list
-				 * instead
-				 */  
-                $(o).find('.deltatempgenerated').each(function(){
-                    $(this).remove()
-                });
-				
-				that.processTree(o);
-				that.processNode(o);
-			});
-		}
+			this._updateValues(name, true);
+			}
+	},
+	
+	updateValue: function(name) {
+		this._updateValues(name, false)
+	},
+	
+	_updateValues: function(name, recurse) {
+        var that = this;
+        var f;
+        var inst;
+        
+        var objs = $('body').find(this._dpregex).filter(function(i){
+            var r = false;
+            inst = that._parseCommand(this);
+            if (inst) {
+                switch (inst.op) {
+                    case 'include':
+                        r = (inst.param == '$' + name);
+                        break;
+                    default:
+                        r = (inst.param == name);
+                }
+            }
+            return r;
+        });
+        objs.each(function(){
+            inst = that._parseCommand(this);
+            var o = this;
+            if ($type(that._ns[name]) == 'array' &&
+            inst.op == '$') {
+                o = $(this).parent();
+            }
+            /*
+             * FIXME: this is not particularly pretty, we remove
+             * generated children so structures like
+             * <div dt_test_foo><div dt_$foo>
+             * don't recurse when you updateValues(foo)
+             * We should prune the elements from the list
+             * instead
+             */
+            $(o).find('.deltatempgenerated').each(function(){
+                $(this).remove()
+            });
+            
+            if (recurse) 
+                that.processTree(o);
+            that.processNode(o);
+        });	
 	},
 	
 	getVariables: function() {
