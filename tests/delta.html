@@ -53,7 +53,8 @@
                     'title': 'Third',
                     'body': '3333333blah blah aasdasdfadsf'
                 }],
-                incfile: 'deltasub.html'
+                incfile: 'deltasub.html',
+				title: 'good, no colision',
             };      
 			dt = new DeltaTemp(stuff);
 					 
@@ -88,11 +89,11 @@
 				dt.setPreProcess(function(e,v) {deredify(e)});
 				dt.setPostProcess(function(e,v) {greenify(e);e.addClass('onpostproc'+v);e.addClass('green')});
 
-				dt.updateValues('now');
+				dt.updateTree('now');
 
 				otherstuff.aopl[0].title = 'First Title';
                 otherstuff.aopl[2].body = 'this is the text body for the third article';
-                dt.updateValues('aopl');
+                dt.updateTree('aopl');
                 //				alert('test update test');
 
 				otherstuff.bad = true;
@@ -104,12 +105,17 @@
 
                 var i;
                 for (i = 0; i < 10; i++) {
-                    dt.updateValues('func');
+                    dt.updateTree('func');
                 };
 
                 otherstuff.good = 1;
                 otherstuff.incfile = 'simple.html';
-                dt.updateValues();
+				otherstuff.rs = 'ops, this was replaced';
+				otherstuff.rt = true;
+				dt.updateValue('rt');
+				
+				alert('end pass 1');
+                dt.updateTree();
 			}
 			
         </script>
@@ -248,6 +254,27 @@
                 <td>
                     <div>
                         there should be some text after this:<span id='goawaytest4' class='deltatemp_test_good'>this text shouldn't go away</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    test no update recursion
+                </td>
+                <td>
+                    <div id='recursiontest' class='deltatemp_test_rt'>
+                        this text should not show, and then show on update 
+						<span class="deltatemp_$rs">but this part shouldn't be replaced</span>
+                    </div>
+                </td>
+            </tr>
+			<tr>
+                <td>
+                    name space colision test
+                </td>
+                <td>
+                    <div>
+                        test :<span id='goawaytest4' class='deltatemp_$title'>this text shouldn't be here</span>
                     </div>
                 </td>
             </tr>
