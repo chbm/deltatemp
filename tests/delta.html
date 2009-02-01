@@ -114,6 +114,12 @@
 				otherstuff.rt = true;
 				dt.updateValue('rt');
 				
+				otherstuff.tm = [
+					{foo: 'line1', bar: 'more line 1', baz: 0},
+					{foo: 'line2', bar: 'more line 2', baz: 0}
+				];
+				dt.updateTree('tm');
+				
 				alert('end pass 1');
                 dt.updateTree();
 			}
@@ -275,6 +281,20 @@
                 <td>
                     <div>
                         test :<span id='goawaytest4' class='deltatemp_$title'>this text shouldn't be here</span>
+                    </div>
+                </td>
+            </tr>
+			<tr>
+                <td>
+                    update test + map test 
+                </td>
+                <td>
+                    <div class="deltatemp_test_tm">
+                    	<div class="deltatemp_$tm">
+                    		<span class="deltatemp_$foo"></span>
+							<span class="deltatemp_$bar"></span>
+							<span class="deltatemp_$baz"></span>
+                    	</div>
                     </div>
                 </td>
             </tr>
