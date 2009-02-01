@@ -80,7 +80,7 @@ DeltaTemp = function(ns, curtains){
 
 DeltaTemp.prototype = DeltaTemp.fn = {
     dprefix: 'deltatemp',
-    _dpregex: '*[className^="deltatemp_"]',
+    _dpregex: '[className*="deltatemp_"]',
     
     init: function(){
     },
@@ -104,6 +104,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
         $(node).find(this._dpregex).each(function(i){
 			that.processNode(this, i);
         });
+		
         delete (this._procs[id]);
         this._raiseCurtain();
 		
@@ -142,38 +143,45 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 			if (!r) return;
             switch ($type(r)) {
                 case 'array':
-                    for (n = r.length - 1; n > -1; n--) {
-                        var e = $(elem).clone();
+					var code = that._getCode(elem);
+					var proto = $(elem).clone();
+					proto.addClass(that.dprefix + '+_' + code);
+					proto.removeClass(that.dprefix + '_' + code);
+					proto.addClass('deltatempgenerated');
+					var e;
+					var n = n = r.length - 1;
+                    while(n > -1) {
+                        e = $(proto).clone();
 						$updateID(e,n);
                         switch ($type(r[n])) {
                             case 'object':
-                                e.addClass(that.dprefix + '_+' + that._getCode(e));
-								that._fullns = that._ns;
-								that._ns = r[n];
-								that.processTree(e);
+								var dtt = new DeltaTemp(r[n]);
+								dtt.processTree(e);
 								e.find(that._dpregex).each(function () {
 									$updateID(this,n);
 								});
-								if(that._ns._id) {
-									if ($type(that._ns._id) == 'function') {
-										e.attr('id', that._ns._id(e, n));										
+								if(r[n]._id) {
+									if ($type(r[n]._id) == 'function') {
+										e.attr('id', r[n]._id(e, n));										
 									}
 									else {
-										e.attr('id', that._ns._id);
+										e.attr('id', r[n]._id);
 									}
 								}
-								that._ns = that._fullns;
                                 break;
                             default:
                                 e.text(r[n]);
                         }
-						if (n > 0) {
-							e.addClass('deltatempgenerated');
-						}
                         e.insertAfter($(elem));
+						n--;
                     }
-                    if (r.length) $(elem).remove(); // here, we cheat. everything is cloned, we just pretend the first isn't
-                    break;
+                    if (r.length) {
+						$(elem).remove(); // here, we cheat. everything is cloned, we just pretend the first isn't
+						e.removeClass('deltatempgenerated');
+						e.removeClass(that.dprefix + '+_' + code);
+						e.addClass(that.dprefix + '_' + code);
+					}
+					break;
                 case 'function':
                     worker(that, r(elem));
                     break;
@@ -240,11 +248,12 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 		}
 		var that = this;
         var s = $(e).attr('className').split(' ').filter(function(el){
-            return el.substr(0, that.dprefix.length) == that.dprefix;
+            return el.substr(0, that.dprefix.length+1) == that.dprefix+'_';
         })[0];
 		var res = {};
 		if(s) {
 			var a = s.split(/_/);
+			if(!a[1]) alert(s);
 			if (a[1].substr(0, 1) == '$') {
 				res.op = a[1].substr(0, 1);
 				res.param = a[1].substr(1);
@@ -268,6 +277,7 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 	},
 	
 	updateTree: function (name) {
+		var that = this;
 		if (name == undefined) {
 			$('body').find('.deltatempgenerated').each(function(){
 				$(this).remove()
@@ -275,57 +285,32 @@ DeltaTemp.prototype = DeltaTemp.fn = {
 			this.processTree($('body'));
 		}
 		else {
-			this._updateValues(name, true);
-			}
+			var worker = function(i, v) {
+				var inst = that._parseCommand(v);
+				if(inst && inst.param == name) {
+					$(v).find('.deltatempgenerated').remove();
+					$(v).siblings('*[className*="'+that.dprefix+'+_$'+name+'"]').remove();
+					that.processTree(v);
+					that.processNode(v);
+				} else {
+					$(v).children().each(worker);
+				}
+			};
+			worker(0, $('body'));
+		}
 	},
 	
 	updateValue: function(name) {
-		this._updateValues(name, false)
+		var that = this;
+		if( name == undefined) return;
+		$('*').filter(function() {
+			var inst = that._parseCommand(this);
+			return (inst && inst.param == name);
+		}).each(function(i, v) {
+			that.processNode(v);
+		});
 	},
 	
-	_updateValues: function(name, recurse) {
-        var that = this;
-        var f;
-        var inst;
-        
-        var objs = $('body').find(this._dpregex).filter(function(i){
-            var r = false;
-            inst = that._parseCommand(this);
-            if (inst) {
-                switch (inst.op) {
-                    case 'include':
-                        r = (inst.param == '$' + name);
-                        break;
-                    default:
-                        r = (inst.param == name);
-                }
-            }
-            return r;
-        });
-        objs.each(function(){
-            inst = that._parseCommand(this);
-            var o = this;
-            if ($type(that._ns[name]) == 'array' &&
-            inst.op == '$') {
-                o = $(this).parent();
-            }
-            /*
-             * FIXME: this is not particularly pretty, we remove
-             * generated children so structures like
-             * <div dt_test_foo><div dt_$foo>
-             * don't recurse when you updateValues(foo)
-             * We should prune the elements from the list
-             * instead
-             */
-            $(o).find('.deltatempgenerated').each(function(){
-                $(this).remove()
-            });
-            
-            if (recurse) 
-                that.processTree(o);
-            that.processNode(o);
-        });	
-	},
 	
 	getVariables: function() {
 		return this._ns;
