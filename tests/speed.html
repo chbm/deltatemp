@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>delta temp speed test</title>
+		
+		<script src='../lib/jquery/jquery.js'>
+        </script>
+        <script src='../delta.js'>
+		</script>
+		
+		<script>
+			var ns = {
+					list: []
+				};
+			for(var i = 0; i < 1000; i++) {
+					ns.list.push( {var1: 'foo', 
+									var2: 'bar', 
+									var3: 'baz',
+									var4: 'xpto',
+									var5: 'zoink  zkoin zkoin zkoin zkoin zkoin',
+									var6: i} );
+				}
+			var dt = new DeltaTemp(ns);
+				
+			$(document).ready(function(){
+			});
+			
+
+			function doFirst() {
+				dt.processDocument();
+			}
+			function doUpdate() {
+				dt.updateTree('list');
+			}
+			function doUpdate2() {
+				dt.updateTree();
+			}
+			function doUpdate3() {
+				dt.updateValue('list');
+			}
+		</script>
+	</head>
+	<body>
+		<button type='button' value='first' onclick='doFirst()'>first</button>
+		<button type='button' value='update' onclick='doUpdate()'>update</button>
+		<button type='button' value='update2' onclick='doUpdate2()'>update</button>
+		<button type='button' value='update3' onclick='doUpdate3()'>update</button>
+		
+	<div id="base"> 
+		<div class="deltatemp_$list">
+			<span class="deltatemp_$var1"></span> -
+			<span class="deltatemp_$var2"></span> -
+			<span class="deltatemp_$var3"></span> -
+			<span class="deltatemp_$var4"></span> -
+			<span class="deltatemp_$var5"></span> -
+			<span class="deltatemp_$var6"></span> -
+			<hr />
+		</div>
+	</div>		
+	
+	</body>
+</html>
